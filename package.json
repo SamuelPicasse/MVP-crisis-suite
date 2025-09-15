@@ -11,10 +11,12 @@
     "test": "turbo test",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "turbo clean && rm -rf node_modules"
+    "clean": "turbo clean && rm -rf node_modules",
+    "mcp:shadcn": "shadcn-ui-server"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
+    "shadcn-ui-mcp-server": "^0.1.2",
     "turbo": "^1.13.4"
   },
   "engines": {
