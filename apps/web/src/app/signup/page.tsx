@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -153,16 +157,15 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <div>
-          <h2 className="text-3xl font-bold text-center text-gray-900">Create account</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sign up to access your Crisis Suite dashboard
-          </p>
-        </div>
-
-        <form className="mt-8 space-y-6" onSubmit={handleSignup}>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Create account</CardTitle>
+            <CardDescription className="text-center">Sign up to access your Crisis Suite dashboard</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-6" onSubmit={handleSignup}>
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
               {error}
@@ -176,10 +179,8 @@ export default function SignupPage() {
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
+              <Label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</Label>
+              <Input
                 id="email"
                 name="email"
                 type="email"
@@ -187,17 +188,15 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 placeholder="Enter your email"
+                className="mt-1"
               />
             </div>
 
             {showPassword && (
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</Label>
+                <Input
                   ref={passwordRef}
                   id="password"
                   name="password"
@@ -206,8 +205,8 @@ export default function SignupPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                   placeholder="Create a password"
+                  className="mt-1"
                 />
               </div>
             )}
@@ -216,71 +215,65 @@ export default function SignupPage() {
           <div className="space-y-3">
             {/* OTP flow */}
             <div className="space-y-2">
-              <button
-                type="button"
-                onClick={handleSendOtp}
-                disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <Button type="button" onClick={handleSendOtp} disabled={loading} className="w-full">
                 Sign up
-              </button>
+              </Button>
               {otpSent && (
                 <div className="flex items-center gap-2">
-                  <input
+                  <Input
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={6}
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
                     placeholder="Enter 6‑digit code"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                    className="flex-1"
                   />
-                  <button
-                    type="button"
-                    onClick={handleVerifyOtp}
-                    disabled={verifying}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
+                  <Button type="button" onClick={handleVerifyOtp} disabled={verifying}>
                     {verifying ? 'Verifying…' : 'Verify'}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
 
             {/* Password signup (de-emphasized) */}
             {!showPassword ? (
-              <button
+              <Button
                 type="button"
+                variant="link"
+                className="text-xs"
                 disabled={loading}
                 onClick={() => { setShowPassword(true); setTimeout(() => passwordRef.current?.focus(), 0); }}
-                className="block text-center text-xs text-gray-600 hover:underline disabled:opacity-50"
               >
-                Use password method instead (why?)
-              </button>
+                Use password instead
+              </Button>
             ) : (
-              <button
+              <Button
                 type="submit"
+                variant="outline"
+                size="sm"
                 disabled={loading}
-                className="block mx-auto inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="block mx-auto"
               >
                 {loading ? 'Creating account…' : 'Create account'}
-              </button>
+              </Button>
             )}
 
             {/** Moved sign-in link to footer next to Back to home */}
           </div>
-        </form>
-        <div className="flex items-center justify-between">
-          <Link href="/" className="text-sm text-primary hover:underline">
-            Back to home
-          </Link>
-          <Link
-            href="/login"
-            className="text-sm text-gray-700 hover:underline"
-          >
-            Already have an account? Sign in
-          </Link>
-        </div>
+            </form>
+          </CardContent>
+          <CardFooter>
+            <div className="w-full flex items-center justify-between">
+              <Link href="/" className="text-sm text-primary hover:underline">
+                Back to home
+              </Link>
+              <Link href="/login" className="text-sm text-gray-700 hover:underline">
+                Already have an account? Sign in
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

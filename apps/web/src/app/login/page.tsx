@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -137,16 +138,15 @@ export default function LoginPage() {
   // Sign up flow is handled on a dedicated /signup page.
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <div>
-          <h2 className="text-3xl font-bold text-center text-gray-900">Sign in</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Access your Crisis Suite
-          </p>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Sign in</CardTitle>
+            <CardDescription className="text-center">Access your Crisis Suite</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-6" onSubmit={handleLogin}>
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
               {error}
@@ -204,14 +204,14 @@ export default function LoginPage() {
               </Button>
               {otpSent && (
                 <div className="flex items-center gap-2">
-                  <input
+                  <Input
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={6}
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
                     placeholder="Enter 6‑digit code"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                    className="flex-1"
                   />
                   <Button
                     onClick={handleVerifyOtp}
@@ -246,21 +246,24 @@ export default function LoginPage() {
 
             {/** Signup CTA moved to footer next to Back to home */}
           </div>
-
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-sm text-primary hover:underline">
-              Back to home
-            </Link>
-            <Button
-              onClick={() => router.push('/signup')}
-              disabled={loading}
-              variant="outline"
-              size="sm"
-            >
-              Create new account
-            </Button>
-          </div>
-        </form>
+            </form>
+          </CardContent>
+          <CardFooter>
+            <div className="w-full flex items-center justify-between">
+              <Link href="/" className="text-sm text-primary hover:underline">
+                Back to home
+              </Link>
+              <Button
+                onClick={() => router.push('/signup')}
+                disabled={loading}
+                variant="outline"
+                size="sm"
+              >
+                Create new account
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
