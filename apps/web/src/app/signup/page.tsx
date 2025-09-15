@@ -159,7 +159,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="rounded-2xl p-[1px] bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-transparent">
+        <div className="rounded-2xl p-px bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-transparent">
           <Card className="rounded-2xl">
           <CardHeader>
             <CardTitle className="text-center text-3xl font-semibold tracking-tight text-gray-900">Create account</CardTitle>
