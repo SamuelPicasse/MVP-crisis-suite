@@ -4,9 +4,37 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { CrisisSummary } from '../../../components/dashboard/CrisisSummary';
 import { ActivityLog } from '../../../components/dashboard/ActivityLog';
+import { useEffect } from 'react';
 
 export default function DashboardPage() {
   const router = useRouter();
+
+  // Ensure the user's profile row exists after magic-link redirect or first login
+  useEffect(() => {
+    const ensureProfile = async () => {
+      try {
+        const supabase = createClient();
+        const { data } = await supabase.auth.getUser();
+        const user = data?.user;
+        if (user) {
+          await supabase
+            .from('users')
+            .upsert(
+              {
+                id: user.id,
+                email: user.email ?? '',
+                full_name: (user.user_metadata as any)?.full_name ?? null,
+                role: (user.user_metadata as any)?.role ?? null
+              },
+              { onConflict: 'id' }
+            );
+        }
+      } catch {
+        // ignore silently
+      }
+    };
+    ensureProfile();
+  }, []);
 
   const handleLogout = async () => {
     const supabase = createClient();

@@ -11,10 +11,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setInfo(null);
     setLoading(true);
 
     const supabase = createClient();
@@ -55,6 +57,34 @@ export default function LoginPage() {
     router.refresh();
   };
 
+  const handleMagicLink = async () => {
+    setError(null);
+    setInfo(null);
+    const emailTrimmed = email.trim();
+    if (!emailTrimmed) {
+      setError('Please enter your email to receive a magic link.');
+      return;
+    }
+    const emailOk = /.+@.+\..+/.test(emailTrimmed);
+    if (!emailOk) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email: emailTrimmed,
+      options: {
+        emailRedirectTo: 'http://localhost:3000/dashboard',
+        shouldCreateUser: true
+      }
+    });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setInfo('Magic link sent! Check your email to finish signing in.');
+  };
+
   // Sign up flow is handled on a dedicated /signup page.
 
   return (
@@ -71,6 +101,11 @@ export default function LoginPage() {
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
               {error}
+            </div>
+          )}
+          {info && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded">
+              {info}
             </div>
           )}
           
@@ -117,6 +152,15 @@ export default function LoginPage() {
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleMagicLink}
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Email me a magic link
             </button>
 
             <button

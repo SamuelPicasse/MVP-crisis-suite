@@ -78,6 +78,34 @@ export default function SignupPage() {
     }
   };
 
+  const handleMagicLink = async () => {
+    setError(null);
+    setInfo(null);
+    const emailTrimmed = email.trim();
+    if (!emailTrimmed) {
+      setError('Please enter your email to receive a magic link.');
+      return;
+    }
+    const emailOk = /.+@.+\..+/.test(emailTrimmed);
+    if (!emailOk) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email: emailTrimmed,
+      options: {
+        emailRedirectTo: 'http://localhost:3000/dashboard',
+        shouldCreateUser: true
+      }
+    });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setInfo('Magic link sent! Check your email to finish signing up.');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
@@ -145,6 +173,15 @@ export default function SignupPage() {
               {loading ? 'Creating account…' : 'Create account'}
             </button>
 
+            <button
+              type="button"
+              onClick={handleMagicLink}
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Email me a magic link instead
+            </button>
+
             <Link
               href="/login"
               className="block text-center text-sm text-gray-700 hover:underline"
@@ -157,4 +194,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
