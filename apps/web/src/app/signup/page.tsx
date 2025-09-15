@@ -216,8 +216,9 @@ export default function SignupPage() {
             {/* OTP flow */}
             <div className="space-y-2">
               <Button type="button" onClick={handleSendOtp} disabled={loading} className="w-full">
-                Sign up
+                Email me a code
               </Button>
+              <p className="text-xs text-gray-500 text-center">We’ll email you a 6‑digit code.</p>
               {otpSent && (
                 <div className="flex items-center gap-2">
                   <Input

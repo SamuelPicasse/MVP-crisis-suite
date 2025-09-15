@@ -195,13 +195,10 @@ export default function LoginPage() {
           <div className="space-y-3">
             {/* OTP flow */}
             <div className="space-y-2">
-              <Button
-                onClick={handleSendOtp}
-                disabled={loading}
-                className="w-full"
-              >
-                Login
+              <Button onClick={handleSendOtp} disabled={loading} className="w-full">
+                Email me a code
               </Button>
+              <p className="text-xs text-gray-500 text-center">We’ll email you a 6‑digit code.</p>
               {otpSent && (
                 <div className="flex items-center gap-2">
                   <Input
