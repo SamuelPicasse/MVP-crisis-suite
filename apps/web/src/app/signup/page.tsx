@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -15,6 +15,8 @@ export default function SignupPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState('');
   const [verifying, setVerifying] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,33 +83,6 @@ export default function SignupPage() {
     }
   };
 
-  const handleMagicLink = async () => {
-    setError(null);
-    setInfo(null);
-    const emailTrimmed = email.trim();
-    if (!emailTrimmed) {
-      setError('Please enter your email to receive a magic link.');
-      return;
-    }
-    const emailOk = /.+@.+\..+/.test(emailTrimmed);
-    if (!emailOk) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email: emailTrimmed,
-      options: {
-        emailRedirectTo: 'http://localhost:3000/dashboard',
-        shouldCreateUser: true
-      }
-    });
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    setInfo('Magic link sent! Check your email to finish signing up.');
-  };
 
   const handleSendOtp = async () => {
     setError(null);
@@ -217,22 +192,25 @@ export default function SignupPage() {
               />
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                placeholder="Create a password"
-              />
-            </div>
+            {showPassword && (
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  ref={passwordRef}
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  placeholder="Create a password"
+                />
+              </div>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -242,9 +220,9 @@ export default function SignupPage() {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Email me a code
+                Sign up
               </button>
               {otpSent && (
                 <div className="flex items-center gap-2">
@@ -269,32 +247,40 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Password signup */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Creating account…' : 'Create account'}
-            </button>
+            {/* Password signup (de-emphasized) */}
+            {!showPassword ? (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => { setShowPassword(true); setTimeout(() => passwordRef.current?.focus(), 0); }}
+                className="block text-center text-xs text-gray-600 hover:underline disabled:opacity-50"
+              >
+                Use password method instead (why?)
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={loading}
+                className="block mx-auto inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Creating account…' : 'Create account'}
+              </button>
+            )}
 
-            <button
-              type="button"
-              onClick={handleMagicLink}
-              disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Email me a magic link instead
-            </button>
-
-            <Link
-              href="/login"
-              className="block text-center text-sm text-gray-700 hover:underline"
-            >
-              Already have an account? Sign in
-            </Link>
+            {/** Moved sign-in link to footer next to Back to home */}
           </div>
         </form>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-sm text-primary hover:underline">
+            Back to home
+          </Link>
+          <Link
+            href="/login"
+            className="text-sm text-gray-700 hover:underline"
+          >
+            Already have an account? Sign in
+          </Link>
+        </div>
       </div>
     </div>
   );

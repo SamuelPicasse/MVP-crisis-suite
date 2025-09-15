@@ -62,33 +62,6 @@ export default function LoginPage() {
     router.refresh();
   };
 
-  const handleMagicLink = async () => {
-    setError(null);
-    setInfo(null);
-    const emailTrimmed = email.trim();
-    if (!emailTrimmed) {
-      setError('Please enter your email to receive a magic link.');
-      return;
-    }
-    const emailOk = /.+@.+\..+/.test(emailTrimmed);
-    if (!emailOk) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email: emailTrimmed,
-      options: {
-        emailRedirectTo: 'http://localhost:3000/dashboard',
-        shouldCreateUser: true
-      }
-    });
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    setInfo('Magic link sent! Check your email to finish signing in.');
-  };
 
   const handleSendOtp = async () => {
     setError(null);
@@ -166,7 +139,7 @@ export default function LoginPage() {
         <div>
           <h2 className="text-3xl font-bold text-center text-gray-900">Sign in</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Access your Crisis Suite dashboard
+            Access your Crisis Suite
           </p>
         </div>
         
@@ -227,9 +200,9 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Email me a code
+                Login
               </button>
               {otpSent && (
                 <div className="flex items-center gap-2">
@@ -254,49 +227,41 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Password flow */}
+            {/* Password flow (de-emphasized) */}
             {!showPassword ? (
               <button
                 type="button"
                 disabled={loading}
                 onClick={() => { setShowPassword(true); setTimeout(() => passwordRef.current?.focus(), 0); }}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="block text-center text-xs text-gray-600 hover:underline disabled:opacity-50"
               >
-                Sign in with password
+                Use password instead
               </button>
             ) : (
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Signing in...' : 'Sign in with password'}
               </button>
             )}
 
-            <button
-              type="button"
-              onClick={handleMagicLink}
-              disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Email me a magic link
-            </button>
+            {/** Signup CTA moved to footer next to Back to home */}
+          </div>
 
+          <div className="flex items-center justify-between">
+            <Link href="/" className="text-sm text-primary hover:underline">
+              Back to home
+            </Link>
             <button
               type="button"
               onClick={() => router.push('/signup')}
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Create new account
             </button>
-          </div>
-
-          <div className="text-center">
-            <Link href="/" className="text-sm text-primary hover:underline">
-              Back to home
-            </Link>
           </div>
         </form>
       </div>
