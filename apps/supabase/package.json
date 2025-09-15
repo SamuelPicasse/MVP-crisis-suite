@@ -1,0 +1,17 @@
+{
+  "name": "@crisis-suite/supabase",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:migrate": "supabase migration up",
+    "db:push": "supabase db push",
+    "db:pull": "supabase db pull",
+    "db:types": "supabase gen types typescript --local > ../packages/db/src/types/database.types.ts"
+  },
+  "devDependencies": {
+    "supabase": "^1.187.0"
+  }
+}

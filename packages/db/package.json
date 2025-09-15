@@ -1,0 +1,17 @@
+{
+  "name": "@crisis-suite/db",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "@crisis-suite/tsconfig": "*",
+    "typescript": "^5.5.4"
+  }
+}
