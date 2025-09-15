@@ -159,13 +159,14 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <Card>
+        <div className="rounded-2xl p-[1px] bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-transparent">
+          <Card className="rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-center">Create account</CardTitle>
-            <CardDescription className="text-center">Sign up to access your Crisis Suite dashboard</CardDescription>
+            <CardTitle className="text-center text-3xl font-semibold tracking-tight text-gray-900">Create account</CardTitle>
+            <CardDescription className="text-center text-gray-500 mt-1">Sign up to access your Crisis Suite dashboard</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" onSubmit={handleSignup}>
+            <form className="space-y-7" onSubmit={handleSignup}>
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
               {error}
@@ -177,9 +178,9 @@ export default function SignupPage() {
             </div>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <Label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</Label>
+              <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">Email address</Label>
               <Input
                 id="email"
                 name="email"
@@ -189,13 +190,13 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="mt-1"
+                className="mt-1.5"
               />
             </div>
 
             {showPassword && (
               <div>
-                <Label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</Label>
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">Password</Label>
                 <Input
                   ref={passwordRef}
                   id="password"
@@ -206,7 +207,7 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a password"
-                  className="mt-1"
+                  className="mt-1.5"
                 />
               </div>
             )}
@@ -274,7 +275,8 @@ export default function SignupPage() {
               </Link>
             </div>
           </CardFooter>
-        </Card>
+          </Card>
+        </div>
       </div>
     </div>
   );
